@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NESTO Modular Storage｜讓每一件物品都有自己的位置</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF7F0; --oat:#EDE6D8; --oat-d:#DDD3C0; --wood:#C9A67A; --wood-d:#A9854F;
+  --ink:#2E2B26; --mute:#6F6A60; --line:rgba(46,43,38,.12);
+  --sans:"Noto Sans TC","Jost",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+  --en:"Jost","Noto Sans TC",sans-serif;
+  --shadow:0 24px 50px -24px rgba(90,70,40,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.8;-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--wood-d);outline-offset:3px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+section{padding:120px 0}
+.en{font-family:var(--en);font-weight:300;letter-spacing:.06em;color:var(--mute)}
+h1,h2,h3{font-weight:400;line-height:1.3}
+h2{font-size:clamp(26px,3.4vw,38px);letter-spacing:.04em}
+.sec-head{margin-bottom:56px;max-width:560px}
+.sec-head p{margin-top:14px;color:var(--mute)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 30px;border-radius:999px;background:var(--ink);color:var(--cream);font-size:15px;letter-spacing:.08em;transition:transform .2s,background .25s,box-shadow .25s}
+.btn:hover{background:var(--wood-d);box-shadow:0 10px 24px -10px rgba(120,90,40,.6);transform:translateY(-2px)}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--cream)}
+.btn svg{width:16px;height:16px;transition:transform .25s}
+.btn:hover svg{transform:translateY(3px)}
+
+/* nav */
+header{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,box-shadow .3s}
+header.solid{background:rgba(250,247,240,.9);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-family:var(--en);font-weight:500;letter-spacing:.32em;font-size:18px}
+.nav ul{display:flex;gap:34px;list-style:none;font-size:14px;letter-spacing:.08em}
+.nav ul a{position:relative;padding:6px 0;color:var(--mute);transition:color .2s}
+.nav ul a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.nav ul a:hover,.nav ul a.on{color:var(--ink)}
+.nav ul a:hover::after,.nav ul a.on::after{transform:scaleX(1)}
+.burger{display:none;width:40px;height:40px;position:relative}
+.burger i{position:absolute;left:9px;right:9px;height:1.5px;background:var(--ink);transition:.3s}
+.burger i:nth-child(1){top:15px}.burger i:nth-child(2){top:24px}
+.burger[aria-expanded=true] i:nth-child(1){top:20px;transform:rotate(45deg)}
+.burger[aria-expanded=true] i:nth-child(2){top:20px;transform:rotate(-45deg)}
+
+/* hero */
+.hero{padding:140px 0 90px;min-height:100vh;display:flex;align-items:center;background:radial-gradient(ellipse 70% 60% at 72% 45%,#fff 0,transparent 70%),var(--cream)}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center}
+.hero h1{font-family:var(--en);font-weight:300;font-size:clamp(46px,7vw,92px);letter-spacing:.02em;line-height:1.05}
+.hero .tag{font-family:var(--en);font-size:clamp(18px,2vw,24px);margin:22px 0 14px;color:var(--wood-d);letter-spacing:.04em}
+.hero p.lead{color:var(--mute);max-width:420px;margin-bottom:38px}
+.hero .stage{position:relative}
+.hero .stage svg{width:100%;filter:drop-shadow(0 30px 30px rgba(90,70,40,.18))}
+.hero .load{animation:rise 1.1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* features */
+.features{background:var(--oat)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card{text-align:left;background:var(--cream);border-radius:20px;padding:22px 22px 28px;transition:transform .35s,box-shadow .35s;box-shadow:0 1px 0 var(--line)}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.card:active{transform:scale(.98)}
+.card .pic{background:var(--oat);border-radius:14px;aspect-ratio:4/3;display:grid;place-items:center;margin-bottom:22px;overflow:hidden}
+.card .pic svg{width:72%}
+.card h3{font-size:19px;margin-bottom:4px}
+.card .en{font-size:13px;display:block;margin-bottom:10px}
+.card p{font-size:14.5px;color:var(--mute)}
+.card .more{margin-top:16px;font-size:13px;color:var(--wood-d);letter-spacing:.08em}
+dialog{border:0;border-radius:24px;background:var(--cream);color:var(--ink);padding:0;max-width:min(780px,92vw);width:100%;margin:auto;box-shadow:0 40px 90px -20px rgba(40,30,10,.5)}
+dialog::backdrop{background:rgba(46,43,38,.45);backdrop-filter:blur(4px)}
+dialog[open]{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.dlg .l{background:var(--oat);display:grid;place-items:center;padding:28px}
+.dlg .r{padding:40px 36px;position:relative}
+.dlg h3{font-size:24px;margin-bottom:4px}
+.dlg ul{margin:18px 0 0 18px;color:var(--mute);font-size:14.5px}
+.dlg li{margin-bottom:6px}
+.x{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;font-size:22px;transition:background .2s,transform .2s}
+.x:hover{background:var(--oat);transform:rotate(90deg)}
+
+/* builder */
+.builder .grid{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:center}
+.viewer{background:linear-gradient(180deg,#fff,var(--oat));border-radius:28px;padding:32px;position:relative;box-shadow:var(--shadow);min-height:380px;display:grid;place-items:center}
+.viewer svg{width:min(100%,440px);transition:opacity .25s}
+.viewer.swap svg{opacity:0}
+.tabs{display:flex;gap:8px;background:var(--oat);padding:6px;border-radius:999px;width:max-content;max-width:100%;margin-bottom:34px}
+.tabs button{padding:10px 22px;border-radius:999px;font-size:14.5px;letter-spacing:.06em;color:var(--mute);transition:.25s}
+.tabs button:hover{color:var(--ink)}
+.tabs button:active{transform:scale(.95)}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--cream)}
+.info h3{font-size:28px}
+.info .en{display:block;margin:2px 0 16px}
+.info p{color:var(--mute);margin-bottom:22px}
+.meta{display:flex;gap:28px;margin-bottom:26px}
+.meta div{font-size:13px;color:var(--mute)}
+.meta b{display:block;font-family:var(--en);font-weight:400;font-size:26px;color:var(--ink)}
+.switch{display:inline-flex;align-items:center;gap:12px;font-size:14px;cursor:pointer}
+.switch input{position:absolute;opacity:0}
+.switch span{width:44px;height:26px;border-radius:99px;background:var(--oat-d);position:relative;transition:.25s}
+.switch span::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.25s}
+.switch input:checked+span{background:var(--wood-d)}
+.switch input:checked+span::after{transform:translateX(18px)}
+.switch input:focus-visible+span{outline:2px solid var(--wood-d);outline-offset:3px}
+
+/* compare */
+.compare{background:var(--oat)}
+.cmp{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:16/8;box-shadow:var(--shadow);user-select:none;touch-action:pan-y;background:#fff}
+.cmp svg{position:absolute;inset:0;width:100%;height:100%}
+.cmp .top{clip-path:inset(0 50% 0 0)}
+.cmp .bar{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;transform:translateX(-1px);pointer-events:none;box-shadow:0 0 12px rgba(0,0,0,.25)}
+.cmp .bar i{position:absolute;top:50%;left:50%;width:48px;height:48px;margin:-24px;border-radius:50%;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.25);display:grid;place-items:center;font-style:normal;font-size:14px;letter-spacing:-2px;color:var(--ink)}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.cmp:focus-within .bar i{outline:2px solid var(--wood-d)}
+.lab{position:absolute;bottom:16px;padding:6px 16px;border-radius:99px;background:rgba(250,247,240,.92);font-size:13px;letter-spacing:.08em;pointer-events:none}
+.lab.a{left:16px}.lab.b{right:16px}
+
+/* specs */
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.spec-list{border-top:1px solid var(--line)}
+.spec-list div{display:grid;grid-template-columns:130px 1fr;padding:20px 0;border-bottom:1px solid var(--line);gap:12px}
+.spec-list dt{color:var(--mute);font-size:14px}
+.spec-list dd b{font-family:var(--en);font-weight:500}
+.mods{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.mods button{padding:10px 20px;border-radius:99px;box-shadow:inset 0 0 0 1px var(--line);font-size:14px;transition:.25s}
+.mods button:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.mods button:active{transform:scale(.95)}
+.mods button[aria-pressed=true]{background:var(--ink);color:var(--cream)}
+.mod-note{background:var(--oat);border-radius:18px;padding:24px 26px;color:var(--mute);font-size:14.5px;min-height:96px}
+.swatches{display:flex;gap:14px;margin-top:26px;font-size:13px;color:var(--mute)}
+.swatches i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:8px;vertical-align:-2px}
+
+/* cta */
+.cta{background:var(--ink);color:var(--cream);text-align:center;padding:140px 0}
+.cta h2{font-family:var(--en);font-weight:300;font-size:clamp(38px,6vw,72px);letter-spacing:.02em}
+.cta p{color:#B9B2A3;margin:18px 0 40px}
+.cta .btn{background:var(--cream);color:var(--ink)}
+.cta .btn:hover{background:var(--wood);color:var(--ink)}
+footer{background:var(--ink);color:#8E8878;font-size:13px;padding:0 0 36px;border-top:1px solid rgba(255,255,255,.08)}
+footer .wrap{display:flex;justify-content:space-between;padding-top:28px;flex-wrap:wrap;gap:10px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,30px);background:var(--ink);color:var(--cream);padding:12px 26px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.35s;z-index:80}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:900px){
+  section{padding:84px 0}
+  .hero .wrap,.builder .grid,.spec-grid{grid-template-columns:1fr;gap:36px}
+  .hero{padding-top:110px}
+  .cards{grid-template-columns:1fr}
+  .dlg{grid-template-columns:1fr}
+  .burger{display:block}
+  .nav ul{position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:var(--cream);padding:8px 28px 20px;box-shadow:0 20px 30px -20px rgba(0,0,0,.2);display:none}
+  .nav ul.open{display:flex}
+  .nav ul a{display:block;padding:14px 0}
+  .cmp{aspect-ratio:4/3.4}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header id="top">
+  <div class="wrap nav">
+    <a href="#top" class="logo">NESTO</a>
+    <button class="burger" aria-label="開啟選單" aria-expanded="false"><i></i><i></i></button>
+    <ul id="menu">
+      <li><a href="#features">產品特色</a></li>
+      <li><a href="#builder">模組組合</a></li>
+      <li><a href="#compare">整理對比</a></li>
+      <li><a href="#specs">產品規格</a></li>
+      <li><a href="#cta">開始打造</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div class="load">
+      <h1>NESTO</h1>
+      <div class="tag">A Place for Everything.</div>
+      <h2 style="font-size:clamp(22px,2.6vw,30px);margin-bottom:14px">讓每一件物品，都有自己的位置。</h2>
+      <p class="lead">可拆卸隔板、可堆疊的模組，與藏在木質飾板後的抽屜。霧面 ABS 與淺色木紋，安靜地待在你的桌面上。</p>
+      <a class="btn" href="#builder" data-scroll>探索收納方式
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v11M3 8.5l5 5 5-5"/></svg></a>
+    </div>
+    <div class="stage load" style="animation-delay:.2s"><div id="heroArt"></div></div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="sec-head"><span class="en">Features</span><h2>三種整理方式，一套系統</h2><p>點選卡片，查看每項設計的細節。</p></div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<section class="builder" id="builder">
+  <div class="wrap">
+    <div class="sec-head"><span class="en">Module Builder</span><h2>組出屬於你的桌面</h2><p>切換模組組合，即時查看示意圖與適合的用途。</p></div>
+    <div class="grid">
+      <div class="viewer" id="viewer"></div>
+      <div class="info">
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <h3 id="cfgName"></h3><span class="en" id="cfgEn"></span>
+        <p id="cfgDesc"></p>
+        <div class="meta"><div><b id="cfgLayers"></b>層數</div><div><b id="cfgSlots"></b>收納格</div><div><b id="cfgH"></b>高度 cm</div></div>
+        <label class="switch"><input type="checkbox" id="divToggle" checked><span></span>安裝隔板</label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="compare" id="compare">
+  <div class="wrap">
+    <div class="sec-head"><span class="en">Before / After</span><h2>從雜亂到有序</h2><p>左右拖曳滑桿，比較整理前後的桌面。</p></div>
+    <div class="cmp" id="cmp">
+      <div id="tidy" style="position:absolute;inset:0"></div>
+      <div id="messy" class="top" style="position:absolute;inset:0"></div>
+      <span class="lab a">整理前 Before</span><span class="lab b">整理後 After</span>
+      <div class="bar" id="bar"><i>◂▸</i></div>
+      <input type="range" min="0" max="100" value="50" id="range" aria-label="整理前後對比滑桿">
+    </div>
+  </div>
+</section>
+
+<section id="specs">
+  <div class="wrap spec-grid">
+    <div>
+      <div class="sec-head" style="margin-bottom:30px"><span class="en">Specifications</span><h2>產品規格</h2></div>
+      <dl class="spec-list">
+        <div><dt>單模組尺寸</dt><dd><b>28 × 16 × 8.6</b> cm（長 × 寬 × 高）</dd></div>
+        <div><dt>材質</dt><dd>霧面 ABS 塑料本體，淺色木質飾板</dd></div>
+        <div><dt>重量</dt><dd>開放層 <b>420</b> g　抽屜層 <b>560</b> g</dd></div>
+        <div><dt>堆疊上限</dt><dd>最多 <b>5</b> 層，底部附防滑墊</dd></div>
+        <div><dt>顏色</dt><dd>奶油白 ／ 燕麥米</dd></div>
+      </dl>
+    </div>
+    <div>
+      <div class="sec-head" style="margin-bottom:24px"><span class="en">Modules</span><h2>可用模組</h2></div>
+      <div class="mods" id="mods"></div>
+      <div class="mod-note" id="modNote"></div>
+      <div class="swatches"><span><i style="background:#F3EEE3;box-shadow:inset 0 0 0 1px var(--line)"></i>奶油白</span><span><i style="background:#DDD3C0"></i>燕麥米</span><span><i style="background:#C9A67A"></i>淺木色</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="cta">
+  <div class="wrap">
+    <h2>Build Your Own Space</h2>
+    <p>從一個模組開始，慢慢長出你的整理方式。</p>
+    <button class="btn" id="ctaBtn">探索產品</button>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><span>© 2026 NESTO Modular Storage</span><span>A Place for Everything.</span></div></footer>
+
+<dialog id="dlg"><div class="dlg"><div class="l" id="dlgArt"></div><div class="r"><button class="x" aria-label="關閉">×</button><span class="en" id="dEn"></span><h3 id="dTitle"></h3><p id="dText" style="color:var(--mute);margin-top:10px"></p><ul id="dList"></ul><a class="btn" href="#builder" id="dGo" style="margin-top:28px">在組合器中試試</a></div></div></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const C={abs:'#F1ECE0',absD:'#DDD4C1',cav:'#CFC5B1',wood:'#CDAA7E',woodL:'#DEC29B',ink:'#3A362F'};
+
+/* ---------- product illustration ---------- */
+function items(x,y,w,i){ // small objects sitting in a compartment
+  const o=[['#8E9A8A','#C9A67A','#B9B2A3'],['#B9B2A3','#7F8C94','#C9A67A'],['#C9A67A','#8E9A8A','#7F8C94']][i%3];
+  const m=x+w/2;
+  if(w<40) return `<rect x="${m-4}" y="${y-30}" width="8" height="30" rx="3" fill="${o[0]}"/>`;
+  return `<rect x="${m-w*.3}" y="${y-34}" width="7" height="34" rx="3" fill="${o[0]}"/>
+  <rect x="${m-w*.3+11}" y="${y-26}" width="7" height="26" rx="3" fill="${o[1]}"/>
+  <rect x="${m+w*.05}" y="${y-18}" width="${Math.min(w*.3,34)}" height="18" rx="3" fill="${o[2]}"/>`;
+}
+const LH=86,GAP=3;
+function layerSVG(type,y,n,div){
+  const x=60,w=280;
+  let s=`<rect x="${x}" y="${y}" width="${w}" height="${LH}" rx="9" fill="${C.abs}"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${LH}" rx="9" fill="none" stroke="rgba(120,100,60,.18)"/>`;
+  if(type==='open'){
+    const cx=x+12,cw=w-24,cy=y+12,ch=LH-22;
+    s+=`<rect x="${cx}" y="${cy}" width="${cw}" height="${ch}" rx="5" fill="${C.cav}"/>`;
+    const cn=div?n+1:1, seg=cw/cn;
+    for(let i=0;i<cn;i++) s+=items(cx+i*seg+4,cy+ch-2,seg-8,i);
+    if(div) for(let i=1;i<cn;i++) s+=`<rect x="${cx+i*seg-2.5}" y="${cy-4}" width="5" height="${ch+2}" rx="1.5" fill="${C.woodL}" stroke="${C.wood}" stroke-width=".6"/>`;
+    s+=`<rect x="${x}" y="${y}" width="${w}" height="5" rx="2.5" fill="${C.wood}"/>`;
+  } else {
+    s+=`<rect x="${x+10}" y="${y+10}" width="${w-20}" height="${LH-18}" rx="5" fill="${C.woodL}"/>
+    <rect x="${x+10}" y="${y+10}" width="${w-20}" height="${LH-18}" rx="5" fill="none" stroke="${C.wood}"/>
+    <rect x="${x+w/2-24}" y="${y+LH/2-4}" width="48" height="8" rx="4" fill="${C.ink}" opacity=".75"/>`;
+  }
+  return s;
+}
+function stack(layers,div=true,uid='s'){
+  const H=layers.length*(LH+GAP), base=292, top=base-H;
+  let g='';
+  layers.forEach((l,i)=>{const y=base-(i+1)*(LH+GAP)+GAP; g+=layerSVG(l.t,y,l.n||0,div);});
+  return `<svg viewBox="0 0 400 310" role="img" aria-label="NESTO 收納盒示意圖">
+  <ellipse cx="200" cy="298" rx="150" ry="9" fill="rgba(90,70,40,.18)"/>${g}
+  <rect x="68" y="${base-2}" width="264" height="6" rx="3" fill="${C.ink}" opacity=".25"/></svg>`;
+}
+const CFG={
+ single:{name:'單層模組',en:'Single Layer',desc:'一層開放式收納，搭配 3 片可調整隔板，把筆、橡皮擦、便利貼各自歸位。適合桌面空間有限、只想先從小地方整理的人。',layers:[{t:'open',n:3}],slots:4,use:'文具・小物'},
+ double:{name:'雙層模組',en:'Double Layer',desc:'上層放常用小物，下層放備品。垂直堆疊，不多佔桌面面積，適合設計系學生放置色筆、膠帶與作品配件。',layers:[{t:'open',n:2},{t:'open',n:3}],slots:7,use:'設計工作桌'},
+ drawer:{name:'抽屜組合',en:'Drawer Set',desc:'上方開放取用，下方兩層隱藏式抽屜。充電線、行動電源、印章等零碎物件藏起來，居家工作桌面保持清爽。',layers:[{t:'open',n:3},{t:'drawer'},{t:'drawer'}],slots:6,use:'居家工作'}
+};
+let cur='double';
+$('#heroArt').innerHTML=stack(CFG.drawer.layers);
+
+/* tabs / viewer */
+const tabs=$('#tabs');
+Object.entries(CFG).forEach(([k,v])=>{
+  const b=document.createElement('button');b.role='tab';b.textContent=v.name;b.dataset.k=k;tabs.append(b);
+  b.onclick=()=>setCfg(k);
+});
+function setCfg(k,animate=true){
+  cur=k;const v=CFG[k];
+  $$('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.k===k));
+  const draw=()=>{
+    $('#viewer').innerHTML=stack(v.layers,$('#divToggle').checked);
+    $('#cfgName').textContent=v.name;$('#cfgEn').textContent=v.en;$('#cfgDesc').textContent=v.desc;
+    $('#cfgLayers').textContent=v.layers.length;
+    $('#cfgSlots').textContent=$('#divToggle').checked?v.slots:v.layers.filter(l=>l.t==='open').length+v.layers.filter(l=>l.t==='drawer').length;
+    $('#cfgH').textContent=(v.layers.length*8.6).toFixed(1);
+    $('#viewer').classList.remove('swap');
+  };
+  if(animate){$('#viewer').classList.add('swap');setTimeout(draw,200)}else draw();
+}
+$('#divToggle').onchange=()=>{setCfg(cur,false);toast($('#divToggle').checked?'已安裝隔板':'已拆下隔板，空間更自由')};
+setCfg('double',false);
+
+/* feature cards */
+const FEAT=[
+ {t:'模組組合',en:'Modular Combination',p:'每個模組尺寸一致，可依需求自由增減。隔板能拆下、重新插入，讓格子大小隨物品改變。',l:['隔板可拆卸，每層 4 種分隔方式','模組尺寸統一，任意互換位置','卡榫固定，搬動不鬆脫'],cfg:'single'},
+ {t:'空間分類',en:'Spatial Sorting',p:'開放層放常用物件，隱藏式抽屜收起不想被看見的東西，讓桌面一眼就能分出主次。',l:['木質飾板抽屜，推拉順滑','抽屜深度可放 A6 筆記本','內襯霧面處理，物品不易刮傷'],cfg:'drawer'},
+ {t:'垂直堆疊',en:'Vertical Stacking',p:'向上發展而不是向外擴張。底部防滑墊與頂部定位槽，讓堆疊到五層仍然穩固。',l:['最多可堆疊 5 層','防滑底墊，不傷桌面','頂層可作為手機或小盆栽平台'],cfg:'double'}
+];
+FEAT.forEach((f,i)=>{
+  const b=document.createElement('button');b.className='card';
+  b.innerHTML=`<div class="pic">${stack(CFG[f.cfg].layers)}</div><h3>${f.t}</h3><span class="en">${f.en}</span><p>${f.p.split('。')[0]}。</p><div class="more">查看細節 +</div>`;
+  b.onclick=()=>{
+    $('#dlgArt').innerHTML=stack(CFG[f.cfg].layers);$('#dEn').textContent=f.en;$('#dTitle').textContent=f.t;$('#dText').textContent=f.p;
+    $('#dList').innerHTML=f.l.map(x=>`<li>${x}</li>`).join('');
+    $('#dGo').onclick=()=>{dlg.close();setCfg(f.cfg,false)};
+    dlg.showModal();
+  };
+  $('#cards').append(b);
+});
+const dlg=$('#dlg');
+dlg.querySelector('.x').onclick=()=>dlg.close();
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+
+/* desks */
+function desk(messy){
+  let s=`<svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="d${+messy}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4CFAE"/><stop offset="1" stop-color="#D3B88F"/></linearGradient></defs>
+  <rect width="800" height="400" fill="url(#d${+messy})"/>
+  ${[60,120,190,260,330].map(y=>`<path d="M0 ${y}q200 -6 400 0t400 0" stroke="rgba(120,90,50,.1)" fill="none"/>`).join('')}`;
+  if(messy){
+    const paper=(x,y,r,c)=>`<g transform="rotate(${r} ${x} ${y})"><rect x="${x-50}" y="${y-36}" width="100" height="72" fill="${c}" stroke="rgba(0,0,0,.12)"/><path d="M${x-38} ${y-18}h60M${x-38} ${y-6}h70M${x-38} ${y+6}h44" stroke="#aaa" stroke-width="2"/></g>`;
+    s+=paper(150,120,-14,'#FFFDF8')+paper(300,90,18,'#F3E9D2')+paper(560,230,-27,'#FFFDF8')+paper(420,300,9,'#EDE3CF');
+    [[90,260,-30,'#8E9A8A'],[130,300,12,'#B7685B'],[200,330,70,'#7F8C94'],[640,110,-50,'#C9A67A'],[690,150,25,'#8E9A8A'],[500,70,-8,'#B7685B'],[250,230,40,'#7F8C94']]
+      .forEach(([x,y,r,c])=>s+=`<rect x="${x}" y="${y}" width="86" height="9" rx="4" fill="${c}" transform="rotate(${r} ${x} ${y})"/>`);
+    s+=`<path d="M40 60C140 20 200 200 330 160S480 20 560 120 700 200 770 90" stroke="#4A4740" stroke-width="3" fill="none" opacity=".7"/>
+    <path d="M30 360C150 300 260 390 380 350" stroke="#4A4740" stroke-width="3" fill="none" opacity=".6"/>
+    <circle cx="610" cy="320" r="34" fill="#F4F1EA" stroke="rgba(0,0,0,.15)"/><circle cx="610" cy="320" r="26" fill="#6B4A32"/>
+    <circle cx="360" cy="190" r="22" fill="#A9B3AB"/><circle cx="360" cy="190" r="9" fill="#D3B88F"/>
+    <rect x="690" y="270" width="60" height="100" rx="8" fill="#3A362F" transform="rotate(18 720 320)"/>`;
+  } else {
+    s+=`<rect x="90" y="70" width="190" height="130" rx="6" fill="#FFFDF8" stroke="rgba(0,0,0,.1)"/><path d="M110 100h120M110 118h140M110 136h90" stroke="#bbb" stroke-width="3"/>
+    <rect x="90" y="230" width="190" height="90" rx="6" fill="#F3E9D2" stroke="rgba(0,0,0,.1)"/>
+    <rect x="620" y="110" width="80" height="140" rx="8" fill="#3A362F"/><rect x="627" y="118" width="66" height="124" rx="4" fill="#556"/>
+    <g transform="translate(330 60) scale(.62)">${layerSVG('open',130,3,true).replace(/<rect x="60"/,'<rect x="60"')}${layerSVG('drawer',130+LH+GAP,0,true)}</g>
+    <ellipse cx="430" cy="300" rx="100" ry="8" fill="rgba(90,70,40,.2)"/>
+    <rect x="320" y="270" width="200" height="14" rx="4" fill="#6B4A32" opacity="0"/>
+    <circle cx="600" cy="320" r="30" fill="#F4F1EA" stroke="rgba(0,0,0,.12)"/><circle cx="600" cy="320" r="22" fill="#6B4A32"/>
+    <rect x="320" y="352" width="220" height="10" rx="5" fill="#8E9A8A"/>`;
+  }
+  return s+'</svg>';
+}
+$('#tidy').innerHTML=desk(false);$('#messy').innerHTML=desk(true);
+
+/* compare slider */
+const range=$('#range');
+function setCmp(v){$('#messy').style.clipPath=`inset(0 ${100-v}% 0 0)`;$('#bar').style.left=v+'%'}
+range.oninput=()=>setCmp(range.value);setCmp(50);
+
+/* modules */
+const MODS=[
+ ['開放層','最基本的模組。上方開放，可放入或取出隔板，適合常用的文具與小物。'],
+ ['隔板層','附 3–4 片木質隔板，可自由拆卸，格子大小隨物品調整。'],
+ ['隱藏式抽屜','淺木色飾板前蓋，推拉順滑，把充電線、備品與雜物收進看不見的地方。'],
+ ['頂蓋','木質頂蓋可當手機架或小物平台，也能讓最上層維持整齊。'],
+ ['防滑底座','底部橡膠止滑墊，堆疊多層時更穩固，也保護桌面。']
+];
+MODS.forEach(([n,d],i)=>{
+  const b=document.createElement('button');b.textContent=n;b.setAttribute('aria-pressed',i===0);
+  b.onclick=()=>{$$('#mods button').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#modNote').textContent=d};
+  $('#mods').append(b);
+});
+$('#modNote').textContent=MODS[0][1];
+
+/* nav */
+const burger=$('.burger'),menu=$('#menu');
+burger.onclick=()=>{const o=menu.classList.toggle('open');burger.setAttribute('aria-expanded',o)};
+$$('#menu a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');burger.setAttribute('aria-expanded',false)}));
+addEventListener('scroll',()=>$('header').classList.toggle('solid',scrollY>30),{passive:true});
+const links=$$('#menu a');
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-45% 0px -50% 0px'});
+['features','builder','compare','specs','cta'].forEach(id=>io.observe(document.getElementById(id)));
+
+/* CTA + toast */
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2200)}
+$('#ctaBtn').onclick=()=>{document.getElementById('builder').scrollIntoView({behavior:'smooth'});toast('從選擇第一個模組開始吧')};
+</script>
+</body>
+</html>
